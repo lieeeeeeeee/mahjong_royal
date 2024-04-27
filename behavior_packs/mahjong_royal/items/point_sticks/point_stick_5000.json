@@ -1,0 +1,34 @@
+{
+  "format_version": "1.20.50",
+  "minecraft:item": {
+    "description": {
+      "identifier": "mahjong:point_stick_5000_item",
+      "menu_category": {
+        "category": "equipment"
+      }
+    },
+    "components": {
+      "minecraft:tags": {
+        "tags": [
+          "mahjong:point_stick_item"
+        ]
+      },
+      "minecraft:allow_off_hand": {
+        "value": false
+      },
+      "minecraft:display_name": {
+        "value": "item.mahjong:point_stick_5000_item.name"
+      },
+      "minecraft:icon": {
+        "texture": "point_stick_5000"
+      },
+      "minecraft:max_stack_size": {
+        "value": 64
+      },
+      "minecraft:cooldown": {
+        "category": "use",
+        "duration": 1.0
+      }
+    }
+  }
+}

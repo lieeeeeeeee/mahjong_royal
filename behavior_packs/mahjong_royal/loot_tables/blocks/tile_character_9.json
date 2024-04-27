@@ -1,0 +1,14 @@
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "mahjong:tile_character_9_item",
+          "weight": 1
+        }
+      ]
+    }
+  ]
+}

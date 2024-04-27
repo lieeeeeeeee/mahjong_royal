@@ -1,0 +1,38 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "§lMahjong Royal §cBehavior Pack",
+    "description": "A game of Mahjong with a twist! Play against other players to see who can complete a hand the fastest.!",
+    "uuid": "69c2de40-2884-42f0-a4e5-f58aac9b4d88",
+    "version": [
+      1,
+      0,
+      1
+    ],
+    "min_engine_version": [
+      1,
+      20,
+      70
+    ]
+  },
+  "modules": [
+    {
+      "description": "Script resources",
+      "language": "javascript",
+      "type": "script",
+      "uuid": "f9e6079d-17e3-4468-92e9-d0f68ab70f63",
+      "version": [
+        1,
+        0,
+        1
+      ],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "module_name": "@minecraft/server",
+      "version": "1.11.0-beta"
+    }
+  ]
+}

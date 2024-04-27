@@ -1,0 +1,125 @@
+{
+  "namespace": "hud",
+  "hud_title_text": {
+    "$mahjong_hand": "mahjong_hand:",
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "offset": [ 0, -19 ],
+    "layer": 1,
+    "alpha": "@hud.anim_title_text_alpha_in",
+    "propagate_alpha": true,
+    "controls": [
+      {
+        "title_frame": {
+          "type": "panel",
+          "size": [ "100%", "100%cm" ],
+          "controls": [
+            {
+              "title_background": {
+                "type": "image",
+                "size": [ "100%sm + 30px", "100%sm + 6px" ],
+                "texture": "textures/ui/hud_tip_text_background",
+                "alpha": "@hud.anim_title_background_alpha_in"
+              }
+            },
+            {
+              "title": {
+                "type": "label",
+                "anchor_from": "top_middle",
+                "anchor_to": "top_middle",
+                "color": "$title_command_text_color",
+                "text": "#text",
+                "layer": 1,
+                "localize": false,
+                "font_size": "extra_large",
+                "variables": [
+                  {
+                    "requires": "(not $title_shadow)",
+                    "$show_shadow": false
+                  },
+                  {
+                    "requires": "$title_shadow",
+                    "$show_shadow": true
+                  }
+                ],
+                "shadow": "$show_shadow",
+                "text_alignment": "center",
+                "offset": [ 0, 6 ],
+                "bindings": [
+                  {
+                    "binding_name": "#hud_title_text_string"
+                  },
+                  {
+                    "binding_name": "#hud_title_text_string",
+                    "binding_name_override": "#text",
+                    "binding_type": "global"
+                  },
+                  {
+                    "binding_type": "view", 
+                    "source_property_name": "((#hud_title_text_string - $mahjong_hand) = #hud_title_text_string)",
+                    "target_property_name": "#visible" 
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  
+  "mahjong_hand_rend": {
+    "$mahjong_hand": "mahjong_hand:",
+    "type": "image",
+    "texture": "textures/ui/Black",  
+    "size": [ "100%", 12 ],
+    "controls": [
+      {
+        "data_control": {
+          "type": "panel",
+          "size": [ 0, 0 ],
+          "bindings": [
+            {
+              "binding_name": "#hud_title_text_string"      
+            },
+            {
+              "binding_name": "#hud_title_text_string",
+              "binding_name_override": "#preserved_text",
+              "binding_condition": "visibility_changed"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "centered_gui_elements_at_bottom_middle": {
+    "modifications": [
+      {
+        "array_name": "controls",
+        "operation": "insert_front",
+        "value": [
+          {
+          }
+        ]
+      }
+    ]
+  },
+  "not_centered_gui_elements": {
+    "modifications": [
+      {
+        "array_name": "controls",
+        "operation": "insert_front",
+        "value": [
+          { 
+            "mahjong_hand_rend@hud.mahjong_hand_rend": {
+              "anchor_from": "top_left",
+              "anchor_to": "top_left",
+              "offset": [ -2, 10 ],
+              "layer": 1
+            } 
+          }
+        ]
+      }
+    ]
+  }
+}

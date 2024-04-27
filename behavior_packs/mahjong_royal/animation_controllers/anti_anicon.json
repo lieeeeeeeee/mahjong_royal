@@ -1,0 +1,180 @@
+{
+  "format_version": "1.20.30",
+  "animation_controllers": {
+
+    "controller.animation.score": {
+      "states": {
+        "default": {
+          "transitions": [
+            {"in":"1"}
+          ],
+          "on_entry": [
+            "v.anti_color_r = q.scoreboard('anti_color_r');",
+            "v.anti_color_g = q.scoreboard('anti_color_g');",
+            "v.anti_color_b = q.scoreboard('anti_color_b');",
+            "v.anti_color_a = q.scoreboard('anti_color_a');",
+            "v.anti_type = q.scoreboard('anti_type');",
+            "v.anti_time = q.scoreboard('anti_time');",
+            "v.anti_ratio = q.scoreboard('anti_ratio');",
+            "v.anti_x = q.scoreboard('anti_x');",
+            "v.anti_y = q.scoreboard('anti_y');",
+            "v.anti_z = q.scoreboard('anti_z');",
+            "v.anti_r = q.scoreboard('anti_r');",
+            "v.anti_xn = q.scoreboard('anti_xn');",
+            "v.anti_yn = q.scoreboard('anti_yn');",
+            "v.anti_zn = q.scoreboard('anti_zn');",
+            "v.anti_rn = q.scoreboard('anti_rn');"
+          ]
+        },
+        "in": {
+          "transitions": [
+            {"default":"1"}
+          ],
+          "on_entry": [
+            "v.anti_color_r = q.scoreboard('anti_color_r');",
+            "v.anti_color_g = q.scoreboard('anti_color_g');",
+            "v.anti_color_b = q.scoreboard('anti_color_b');",
+            "v.anti_color_a = q.scoreboard('anti_color_a');",
+            "v.anti_type = q.scoreboard('anti_type');",
+            "v.anti_time = q.scoreboard('anti_time');",
+            "v.anti_ratio = q.scoreboard('anti_ratio');",
+            "v.anti_x = q.scoreboard('anti_x');",
+            "v.anti_y = q.scoreboard('anti_y');",
+            "v.anti_z = q.scoreboard('anti_z');",
+            "v.anti_r = q.scoreboard('anti_r');",
+            "v.anti_xn = q.scoreboard('anti_xn');",
+            "v.anti_yn = q.scoreboard('anti_yn');",
+            "v.anti_zn = q.scoreboard('anti_zn');",
+            "v.anti_rn = q.scoreboard('anti_rn');"
+          ]
+        }
+      }
+    },
+
+    "controller.animation.anti0": {
+      "states": {
+        "default": {
+          "transitions": [
+            {"no_inout":"1"}
+          ]
+        },
+        "no_inout": {
+          "transitions": [
+            {"default":"1"}
+          ],
+          "on_entry": [
+            "/tag @s remove anti_out",
+            "/tag @s remove anti_in"
+          ]
+        }
+      }
+    },
+    "controller.animation.anti1": {
+      "states": {
+        "default": {
+          "transitions": [
+            {"in":"math.pow(q.property('property:anti_y')/100-q.position(1),2)+math.pow(-q.property('property:anti_x')/100+q.position(0),2)+math.pow(-q.property('property:anti_z')/100+q.position(2),2) <= math.pow(q.property('property:anti_r')/100,2) "},
+            {"out":"math.pow(q.property('property:anti_y')/100-q.position(1),2)+math.pow(-q.property('property:anti_x')/100+q.position(0),2)+math.pow(-q.property('property:anti_z')/100+q.position(2),2) > math.pow(q.property('property:anti_r')/100,2) "}
+          ]
+        },
+        "in": {
+          "transitions": [
+            {"default":"1"}
+          ],
+          "on_entry": [
+            "/tag @s remove anti_out",
+            "/tag @s add anti_in"
+          ]
+        },
+        "out": {
+          "transitions": [
+            {"default":"1"}
+          ],
+          "on_entry": [
+            "/tag @s remove anti_in",
+            "/tag @s add anti_out"
+          ]
+        }
+      }
+    },
+    "controller.animation.anti2": {
+      "states": {
+        "default": {
+          "transitions": [
+            {"in":"math.pow(-q.property('property:anti_x')/100+q.position(0),2)+math.pow(-q.property('property:anti_z')/100+q.position(2),2) <= math.pow(q.property('property:anti_r')/100,2) "},
+            {"out":"math.pow(-q.property('property:anti_x')/100+q.position(0),2)+math.pow(-q.property('property:anti_z')/100+q.position(2),2) > math.pow(q.property('property:anti_r')/100,2) "}
+          ]
+        },
+        "in": {
+          "transitions": [
+            {"default":"1"}
+          ],
+          "on_entry": [
+            "/tag @s remove anti_out",
+            "/tag @s add anti_in"
+          ]
+        },
+        "out": {
+          "transitions": [
+            {"default":"1"}
+          ],
+          "on_entry": [
+            "/tag @s remove anti_in",
+            "/tag @s add anti_out"
+          ]
+        }
+      }
+    },
+    "controller.animation.anti_move": {
+      "states": {
+        "default": {
+          "transitions": [
+            {"system":"q.get_name=='system'"}
+          ]
+        },
+        "system": {
+          "transitions": [
+            {"move_start":"q.scoreboard('anti_time')>=1 && q.scoreboard('anti_ratio')==0"},
+            {"move1":"q.scoreboard('anti_time')>=1"}
+          ]
+        },
+        "move_start": {
+          "transitions": [
+            {"move1":"1"}
+          ],
+          "on_entry": [
+            "/function anti_start"
+          ]
+        },
+        "move1": {
+          "transitions": [
+            {"move_end":"q.scoreboard('anti_time') <= q.scoreboard('anti_ratio')"},
+            {"move2":"1"}
+          ],
+          "on_entry": [
+            "/scoreboard players add @s anti_ratio 1"
+          ]
+        },
+        "move2": {
+          "transitions": [
+            {"move_end":"q.scoreboard('anti_time') <= q.scoreboard('anti_ratio')"},
+            {"move1":"1"}
+          ],
+          "on_entry": [
+            "/scoreboard players add @s anti_ratio 1"
+          ]
+        },
+
+        "move_end": {
+          "transitions": [
+            {"system":"1"}
+          ],
+          "on_entry": [
+            "/function anti_end"
+          ]
+        }
+      }
+    }
+
+  }
+}

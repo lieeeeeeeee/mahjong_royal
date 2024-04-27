@@ -1,0 +1,16 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.anti" : {
+			"initial_state" : "default",
+			"states" : {
+				"default" : {
+					"particle_effects" : [
+						{"effect" : "anti"},
+						{"effect" : "anti_center"}
+					]
+				}
+			}
+		}
+	}
+}

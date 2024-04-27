@@ -1,0 +1,86 @@
+{
+  "format_version": "1.10.0",
+  "particle_effect": {
+    "description": {
+      "identifier": "ny:anti",
+      "basic_render_parameters": {
+        "material": "particles_blend",
+        "texture": "textures/mahjong/particle/anti"
+      }
+    },
+    "events": {
+      "smoke": {
+        "particle_effect": {
+          "effect": "minecraft:balloon_gas_particle",
+          "type": "emitter"
+        }
+      }
+    },
+    "components": {
+      "minecraft:emitter_local_space": {
+        "position": true,
+        "velocity": false,
+        "rotation": false
+      },
+      "minecraft:emitter_rate_instant": {
+        "num_particles":"v.n=360; return (q.property('property:anti_type')==1 ? 360 : v.n);"
+      },
+      "minecraft:emitter_lifetime_looping": {
+        "active_time": 0.05,
+        "sleep_time": 1000000.0
+    },
+      "minecraft:emitter_shape_point": {
+        "offset": [ 0.0,0.0,0.0 ],
+        "direction": [ 0.0,0.0,0.0 ]
+      },
+      "minecraft:particle_initial_speed": 0.0,
+      "minecraft:particle_lifetime_expression": {
+        "max_lifetime": "1000000.1"
+      },
+      "minecraft:particle_motion_dynamic": {
+        "linear_acceleration": [ 0, 0, 0 ]
+      },
+      "minecraft:particle_motion_parametric": {
+        "relative_position": [ 
+	  "v.n0 = v.n0 ?? 0;v.n1 = v.n1 ?? 0;v.n2 = v.n2 ?? 0;v.n3 = v.n3 ?? 0; v.n0=math.mod(v.n0+1, 10 ); v.n1=math.mod(v.n1+1,180); v.n2=math.mod(v.n2+1,360);v.n3=math.mod(v.n3+1,v.n); return   q.position(0) - q.property('property:anti_x')/100 + q.property('property:anti_r')/100*(  q.property('property:anti_type')==1? math.cos(2*v.n1)  :  math.cos( 9*v.n0 )  *math.cos(v.n2)  );", 
+	  "-q.position(1)+ q.property('property:anti_y')/100 + q.property('property:anti_r')/100*(  q.property('property:anti_type')==1? 0  :  math.sin( 9*v.n0 )  )", 
+	  "q.position(2) - q.property('property:anti_z')/100 + q.property('property:anti_r')/100*(  q.property('property:anti_type')==1? math.sin(2*v.n1)  :  math.cos( 9*v.n0 )   *math.sin(v.n2)  )" 
+		],
+        "direction": [
+          "(  q.property('property:anti_type')==1 ? (v.n2>=180? -1 : 1)*math.cos(2*v.n1) : (v.n3>=v.n/2? -1 : 1)*math.cos( 9*v.n0 ) *math.cos(v.n2)  )", 
+          "(  q.property('property:anti_type')==1 ? 0 : (v.n3>=v.n/2? -1 : 1)*math.sin( 9*v.n0 )  )", 
+          "(  q.property('property:anti_type')==1 ? (v.n2>=180? -1 : 1)*math.sin(2*v.n1) : (v.n3>=v.n/2? -1 : 1)*math.cos( 9*v.n0 ) *math.sin(v.n2)  )" 
+          ],    
+        "rotation": "0"
+     },
+      "minecraft:particle_motion_collision": {
+        "collision_drag": 50.0,
+        "coefficient_of_restitution": 0.0,
+        "collision_radius": 0.0
+      },
+      "minecraft:particle_appearance_billboard": {
+        "size": [
+          "v.n01 = v.n01 ?? 0;v.n01=math.mod(v.n01+1, 10 ); return q.property('property:anti_type')==0 ? 0 :( q.property('property:anti_type')==1 ? ( 0.017455 * q.property('property:anti_r')/100) : ( (0.0177*5 - 0.1 * (9*v.n01/100)* (9*v.n01/100) )* q.property('property:anti_r')/100 ) );",
+          "q.property('property:anti_type')==0 ? 0 :( q.property('property:anti_type')==1 ? 500 : ( (0.079+(v.n01==9? 0.08:0))* q.property('property:anti_r')/100 ) )"
+        ],
+        "facing_camera_mode": "direction_z",
+        "uv": {
+          "texture_width": 128,
+          "texture_height": 128,
+          "flipbook": {
+            "base_UV": [ 40, 0 ],
+            "size_UV": [ 128, 128 ],
+            "step_UV": [ 0, 0 ],
+            "frames_per_second": 3,
+            "max_frame": 3,
+            "stretch_to_lifetime": true,
+            "loop": false
+          }
+        }
+      },
+      "minecraft:particle_appearance_tinting": {
+        "color": [ "q.property('property:anti_color_r')/256", "q.property('property:anti_color_g')/256", "q.property('property:anti_color_b')/256", "q.property('property:anti_color_a')/256" ]
+      }
+    }
+  }
+}

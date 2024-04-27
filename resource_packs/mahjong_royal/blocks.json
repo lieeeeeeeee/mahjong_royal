@@ -1,0 +1,118 @@
+{
+  "format_version": [1, 1, 0],
+  "mahjong:tile_wind_east_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_wind_south_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_wind_west_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_wind_north_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_dragon_white_block": {
+    "sound": "wood",
+    "carried_textures": "testItem"
+  },
+  "mahjong:tile_dragon_green_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_dragon_red_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_bamboo_1_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_bamboo_2_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_bamboo_3_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_bamboo_4_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_bamboo_5_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_bamboo_5_red_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_bamboo_6_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_bamboo_7_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_bamboo_8_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_bamboo_9_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_character_1_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_character_2_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_character_3_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_character_4_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_character_5_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_character_5_red_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_character_6_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_character_7_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_character_8_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_character_9_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_circle_1_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_circle_2_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_circle_3_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_circle_4_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_circle_5_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_circle_5_red_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_circle_6_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_circle_7_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_circle_8_block": {
+    "sound": "wood"
+  },
+  "mahjong:tile_circle_9_block": {
+    "sound": "wood"
+  },
+  "mahjong:world_border_block": {
+    "sound": "glass"
+  }
+}

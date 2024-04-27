@@ -1,0 +1,135 @@
+{
+  "resource_pack_name":"mahjong",
+  "texture_name":"atlas.items",
+  "texture_data": {
+    "winning_stick": {
+      "textures": "textures/mahjong/items/winning_stick"
+    },
+    "point_stick_100": {
+      "textures": "textures/mahjong/items/point_stick_100"
+    },
+    "point_stick_500": {
+      "textures": "textures/mahjong/items/point_stick_500"
+    },
+    "point_stick_1000": {
+      "textures": "textures/mahjong/items/point_stick_1000"
+    },
+    "point_stick_5000": {
+      "textures": "textures/mahjong/items/point_stick_5000"
+    },
+    "point_stick_10000": {
+      "textures": "textures/mahjong/items/point_stick_10000"
+    },
+    "tile_wind_east": {
+      "textures": "textures/mahjong/items/tile_wind_east"
+    },
+    "tile_wind_south": {
+      "textures": "textures/mahjong/items/tile_wind_south"
+    },
+    "tile_wind_west": {
+      "textures": "textures/mahjong/items/tile_wind_west"
+    },
+    "tile_wind_north": {
+      "textures": "textures/mahjong/items/tile_wind_north"
+    },
+    "tile_dragon_white": {
+      "textures": "textures/mahjong/items/tile_dragon_white"
+    },
+    "tile_dragon_green": {
+      "textures": "textures/mahjong/items/tile_dragon_green"
+    },
+    "tile_dragon_red": {
+      "textures": "textures/mahjong/items/tile_dragon_red"
+    },
+    "tile_character_1": {
+      "textures": "textures/mahjong/items/tile_character_1"
+    },
+    "tile_character_2": {
+      "textures": "textures/mahjong/items/tile_character_2"
+    },
+    "tile_character_3": {
+      "textures": "textures/mahjong/items/tile_character_3"
+    },
+    "tile_character_4": {
+      "textures": "textures/mahjong/items/tile_character_4"
+    },
+    "tile_character_5": {
+      "textures": "textures/mahjong/items/tile_character_5"
+    },
+    "tile_character_5_red": {
+      "textures": "textures/mahjong/items/tile_character_5_red"
+    },
+    "tile_character_6": {
+      "textures": "textures/mahjong/items/tile_character_6"
+    },
+    "tile_character_7": {
+      "textures": "textures/mahjong/items/tile_character_7"
+    },
+    "tile_character_8": {
+      "textures": "textures/mahjong/items/tile_character_8"
+    },
+    "tile_character_9": {
+      "textures": "textures/mahjong/items/tile_character_9"
+    },
+    "tile_bamboo_1": {
+      "textures": "textures/mahjong/items/tile_bamboo_1"
+    },
+    "tile_bamboo_2": {
+      "textures": "textures/mahjong/items/tile_bamboo_2"
+    },
+    "tile_bamboo_3": {
+      "textures": "textures/mahjong/items/tile_bamboo_3"
+    },
+    "tile_bamboo_4": {
+      "textures": "textures/mahjong/items/tile_bamboo_4"
+    },
+    "tile_bamboo_5": {
+      "textures": "textures/mahjong/items/tile_bamboo_5"
+    },
+    "tile_bamboo_5_red": {
+      "textures": "textures/mahjong/items/tile_bamboo_5_red"
+    },
+    "tile_bamboo_6": {
+      "textures": "textures/mahjong/items/tile_bamboo_6"
+    },
+    "tile_bamboo_7": {
+      "textures": "textures/mahjong/items/tile_bamboo_7"
+    },
+    "tile_bamboo_8": {
+      "textures": "textures/mahjong/items/tile_bamboo_8"
+    },
+    "tile_bamboo_9": {
+      "textures": "textures/mahjong/items/tile_bamboo_9"
+    },
+    "tile_circle_1": {
+      "textures": "textures/mahjong/items/tile_circle_1"
+    },
+    "tile_circle_2": {
+      "textures": "textures/mahjong/items/tile_circle_2"
+    },
+    "tile_circle_3": {
+      "textures": "textures/mahjong/items/tile_circle_3"
+    },
+    "tile_circle_4": {
+      "textures": "textures/mahjong/items/tile_circle_4"
+    },
+    "tile_circle_5": {
+      "textures": "textures/mahjong/items/tile_circle_5"
+    },
+    "tile_circle_5_red": {
+      "textures": "textures/mahjong/items/tile_circle_5_red"
+    },
+    "tile_circle_6": {
+      "textures": "textures/mahjong/items/tile_circle_6"
+    },
+    "tile_circle_7": {
+      "textures": "textures/mahjong/items/tile_circle_7"
+    },
+    "tile_circle_8": {
+      "textures": "textures/mahjong/items/tile_circle_8"
+    },
+    "tile_circle_9": {
+      "textures": "textures/mahjong/items/tile_circle_9"
+    }
+  }
+}

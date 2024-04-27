@@ -1,0 +1,36 @@
+{
+  "format_version": "1.20.50",
+  "minecraft:item": {
+    "description": {
+      "identifier": "mahjong:winning_stick",
+      "menu_category": {
+        "category": "items"
+      }
+    },
+    "components": {
+      "minecraft:tags": {
+        "tags": [
+          "mahjong:winning_stick"
+        ]
+      },
+      "minecraft:allow_off_hand": {
+        "value": true
+      },
+      "minecraft:display_name": {
+        "value": "item.mahjong:winning_stick.name"
+      },
+      "minecraft:glint": {
+       "value": false
+      },
+      "minecraft:hand_equipped":{
+        "value": false
+      },
+      "minecraft:icon": {
+        "texture": "winning_stick"
+      },
+      "minecraft:max_stack_size": {
+        "value": 1
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "§lMahjong Royal §cResource Pack",
+    "description": "",
+    "uuid": "13971505-e769-49df-8746-bddfaf10d752",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      20,
+      70
+    ]
+  },
+  "modules": [
+    {
+      "description": "§lMahjong Resource Pack",
+      "type": "resources",
+      "uuid": "d75d2f8c-9809-4152-837a-196cb1335d4a",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "9c8b8acd-719c-4242-9c27-02eb812e5dda",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}
