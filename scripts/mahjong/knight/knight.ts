@@ -1,4 +1,4 @@
-import { world, Player, EntityInventoryComponent, ItemStack, Vector3 } from "@minecraft/server";
+import { world, Player, EntityInventoryComponent, ItemStack, Vector3, EntityComponentTypes, EquipmentSlot } from "@minecraft/server";
 import { Tile } from '../tile';
 import { Hand } from "./hand";
 import { pointSticks } from "../pointStick";
@@ -61,7 +61,8 @@ export class Knight {
       const points = result.defen;
       world.sendMessage(`----------------`);
       world.sendMessage(`§l§6${this.name}§fが§a${points}点§fで和了しました`);
-      world.sendMessage(`§l[${this.hand.GetDisplayedString()}§f]`);
+      // world.sendMessage(`§l[${this.hand.GetDisplayedString()}§f]`);
+      this.object.runCommand(`tellraw @a {"rawtext":[{"text":"${this.hand.GetDisplayedString()}"}]}`);
       world.sendMessage(`§l${yakus.map((yaku) => `§7${yaku.name}§f: §c${yaku.fanshu}翻`).join("\n")}`);
       world.sendMessage(`----------------`);
       this.object.runCommand(`title @s title §l§6${points}点`);
@@ -108,20 +109,25 @@ export class Knight {
     this.hand.tiles.splice(index, 1);
 
     // from inventory
-    for (let i = 0; i < this.inventorySize; i++) {
-      const item = this.inventory.container?.getItem(i);
-      if (item?.type.id !== tileId) continue;
-      this.inventory.container?.setItem(i);
-      return;
-    }
+    // for (let i = 0; i < this.inventorySize; i++) {
+    //   const item = this.inventory.container?.getItem(i);
+    //   if (item?.type.id !== tileId) continue;
+    //   this.inventory.container?.setItem(i);
+    //   return;
+    // }
   }
   public GainTile(tile: Tile) {
     this.PushTileToHand(tile);
-    this.AddTileToInventory(tile);
+    // this.AddTileToInventory(tile);
+    this.AddTileToMainHand(tile);
   }
   public AddTileToInventory(tile: Tile) {
     let inventory = this.object.getComponent("inventory") as EntityInventoryComponent;
     inventory.container?.addItem(new ItemStack(tile.itemId, 1));
+  }
+  public AddTileToMainHand(tile: Tile) {
+    let equipments = this.object.getComponent(EntityComponentTypes.Equippable);
+    equipments?.setEquipment(EquipmentSlot.Mainhand, new ItemStack(tile.itemId, 1));
   }
   public PushTileToHand(tile: Tile) {
     this.hand.tiles.push(tile);
@@ -165,7 +171,7 @@ export class Knight {
     this.overworld.runCommand(`playsound ${sound} @a`);
   }
   public DisplayHand(str?: string | null) {
-    this.object.runCommand(`title @s actionbar §l手牌: ${str ?? this.hand.displayedString}`);
+    this.object.runCommand(`/titleraw @s actionbar {"rawtext":[{"text":"${str ?? this.hand.displayedString}"}]}`);
   }
   public Teleport(loc: Vector3) {
     this.object.teleport(loc);

@@ -37,7 +37,7 @@ export class Hand {
     return Util.tingpai(Shoupai.fromString(this.systemString));
   }
   public GetDisplayedString(): string {
-    const str = this.tiles.map((tile) => tile.str).join("§f,");
+    const str = this.tiles.map((tile) => tile.str).join("");
     this.displayedString = str;
     return str;
   }
@@ -46,25 +46,29 @@ export class Hand {
     let displayTingpaiStr: string = "";
     tingpai.forEach((tile, index) => {
       const type = tile[0];
-      const tileIndex = tile[1];
-      let str = "";
+      const tileIndex = type === "z" ? `${Number(tile[1]) - 1}` : tile[1];
+      let str = "\\ue1";
+      let prefixSpace = "";
+      let suffixSpace = "";
       switch (type) {
-        case "p": str = `§9${tileIndex}§9筒`; break;
-        case "s": str = `§a${tileIndex}§a索`; break;
-        case "m": str = `§7${tileIndex}§4萬`; break;
-        case "z": 
-          switch (tileIndex) {
-            case "1": str = `§7東`; break;
-            case "2": str = `§7南`; break;
-            case "3": str = `§7西`; break;
-            case "4": str = `§7北`; break;
-            case "5": str = `§f白`; break;
-            case "6": str = `§2發`; break;
-            case "7": str = `§4中`; break;
-          }
-          break;
+        case "s": str += `c`; break;
+        case "p": str += `d`; break;
+        case "m": str += `e`; break;
+        case "z": str += `f`; break;
       }
-      displayTingpaiStr += str + (index === tingpai.length - 1 ? "" : " §r§for§l ");
+      str += tileIndex;
+
+      if (tileIndex === "0") { prefixSpace = "  "; }
+      if (tileIndex === "2") { suffixSpace = " "; }
+      if (tileIndex === "3") { prefixSpace = "   "; }
+      if (tileIndex === "4") { suffixSpace = "   "; }
+      if (tileIndex === "7") { suffixSpace = "  "; }
+      if (tileIndex === "8") { prefixSpace = "  "; }
+      if (type === "s") {
+        if (tileIndex === "7") { suffixSpace = " "; }
+        if (tileIndex === "9") { suffixSpace = "    "; }
+      }
+      displayTingpaiStr += `${prefixSpace}${str}${suffixSpace}`;
     });
     return displayTingpaiStr;
   }

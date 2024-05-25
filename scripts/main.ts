@@ -32,8 +32,11 @@ function runCommand(command: string[], sender?: Entity) {
     overworld.runCommand(`tellraw @a[tag=op] {"rawtext":[{"text": "§o> §7[ERROR] Player §c${(sender as Player).name} §7is not an operator"}]}`);
     return;
   }
+  const key = command[0];
   overworld.runCommand(`tellraw @a[tag=op] {"rawtext":[{"text": "§o> §7Received command: §c${command.join(" ")}"}]}`);
-  switch (command[0]) {
+  switch (key) {
+    case "!i":
+    case "!init":
     case "!initialize":
       mahjong.game.Init();
       break;
@@ -41,11 +44,23 @@ function runCommand(command: string[], sender?: Entity) {
       if (!command[1]) { overworld.runCommand(`tellraw @a[tag=op] {"rawtext":[{"text": "§o> §7[ERROR] Selecter is not found"}]}`);  return; }
       mahjong.ChangePlayerMode(command[1]);
       break;
+    case "!s":
+    case "!start":
     case "!startGame":
       mahjong.game.isStarted = true;
       break;
+    case "!e":
+    case "!end":
     case "!endGame":
       mahjong.game.End();
+      break;
+    case "!0":
+    case "!1":
+    case "!2":
+    case "!3":
+      const player = sender as Player;
+      if (!player) return;
+      player.runCommand(`gamemode ${key === "!3" ? "spectator" : key.replace("!", "")}`);
       break;
     case "!test":
       mahjong.Test();
@@ -64,7 +79,7 @@ function runCommand(command: string[], sender?: Entity) {
       (sender as Player).runCommand(`tp @s @e[type=minecraft:armor_stand,name=system]`);
       break;
     default:
-      if (!command[1]) { overworld.runCommand(`tellraw @a[tag=op] {"rawtext":[{"text": "§o> §7[ERROR] Command §c${command[0]} §7not found"}]}`);  return; }
+      if (!command[1]) { overworld.runCommand(`tellraw @a[tag=op] {"rawtext":[{"text": "§o> §7[ERROR] Command §c${key} §7not found"}]}`);  return; }
       break;
   }
 }

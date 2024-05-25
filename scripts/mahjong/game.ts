@@ -4,15 +4,22 @@ import { Tile } from './tile';
 import Round from "./round/round";
 
   export default class Game {
+    private readonly second: number = 20;
+    private readonly roundInterval: number = 10 * this.second;
+    private readonly preparetionTime: number = 5 * this.second;
+    private readonly resultAnnounceTime: number = 20 * this.second;
+    private readonly roundMaxCount: number = 2;
+    private readonly initalPoints: number = 25000;
+    private readonly overworld = world.getDimension("overworld");
+    private readonly winnerLocation: Vector3 = { x: -486, y: 85, z: 355 };
+    private readonly loserLocation: Vector3 = { x: -479, y: 81, z: 355 };
+
     private rouds: Round[] = [];
     private knights: Knight[] = [];
     public isStarted: boolean = false;
-    private roundMaxCount: number = 1;
-    private roundInterval: number = 10 * 20; // minutes * seconds * ticks
     private roundIntervalCount: number = 0;
-    private initalPoints: number = 25000;
-    private preparetionTime: number = 10 * 20; // minutes * seconds * ticks
-    private overworld = world.getDimension("overworld");
+    private preparetionTimeCount: number = 0;
+    private resultAnnounceTimeCount: number = 0;
     private spawnLocation: Vector3 = { x: -285, y: 73, z: 312 };
 
     // Initialize
@@ -48,12 +55,14 @@ import Round from "./round/round";
       this.overworld.runCommand(`tellraw @a[tag=op] {"rawtext":[{"text": "§o> §7Game initialized"}]}`);
 
       this.knights.forEach((knight) => {
-        knight.object.kill();
+        if (!knight.object.isOp()) knight.object.kill();
       });
       this.knights = [];
       this.rouds = [];
       this.isStarted = false;
       this.roundIntervalCount = 0;
+      this.preparetionTimeCount = 0;
+      this.resultAnnounceTimeCount = 0;
       pointsObj.getParticipants().forEach((participant) => {
         pointsObj.removeParticipant(participant.displayName);
       });
@@ -65,62 +74,98 @@ import Round from "./round/round";
     }
     private Start() {
       const pointsObj = this.getScoreboardObjective("points");
+      const players = world.getPlayers();
       if (!pointsObj) return;
       world.sendMessage(`§lゲーム§a開始`);
       this.isStarted = true;
       this.rouds = [];
+      this.resultAnnounceTimeCount = 0;
       this.knights.forEach((knight) => {
         let inventory = knight.object.getComponent("inventory") as EntityInventoryComponent;
         knight.points = this.initalPoints;
         knight.hand.Init();
         pointsObj.setScore(knight.decoratedName, this.initalPoints);
+        knight.object.nameTag = "";
         knight.object.resetLevel();
         inventory.container?.clearAll();
       });
+      pointsObj.getParticipants().forEach((participant) => {
+        if (!this.knights.find((knight) => knight.decoratedName === participant.displayName)) pointsObj.removeParticipant(participant.displayName);
+      });
+
       this.StartRound();
     }
     public End() {
       if (!this.isStarted) return;
       const currentRound = this.currentRound;
       world.sendMessage(`§lゲーム§c終了`);
-      this.isStarted = false;
-      this.roundIntervalCount = 0;
-      this.preparetionTime = 10 * 20;
-      this.knights.forEach((knight) => {
-        let inventory = knight.object.getComponent("inventory") as EntityInventoryComponent;
-        knight.ChangeGameMode("adventure");
-        knight.object.addExperience(-knight.object.getTotalXp());
-        inventory.container?.clearAll();
-        knight.object.kill();
-      });
       // 緊急終了した場合
       if (currentRound.isStarted) {
         currentRound.cleanUpTiles();
         currentRound.respawnWorldBorder();
         this.overworld.runCommand(`gamerule pvp false`);
       }
+      this.isStarted = false;
+      this.roundIntervalCount = 0;
+      this.preparetionTimeCount = 0;
+      this.resultAnnounceTimeCount = 0;
+      this.rouds = [];
+      this.knights.forEach((knight) => {
+        let inventory = knight.object.getComponent("inventory") as EntityInventoryComponent;
+        knight.ChangeGameMode("adventure");
+        knight.object.addExperience(-knight.object.getTotalXp());
+        knight.object.nameTag = knight.name;
+        knight.hand.Init();
+        knight.Teleport(this.spawnLocation);
+        inventory.container?.clearAll();
+      });
+      
     }
     public Update() {
       if (!this.isStarted) return;
       if (this.knights.length === 0) { this.End(); return; }
-      if (0 < this.preparetionTime) {
-        if (this.preparetionTime % 20 === 0) { 
-          this.overworld.runCommand(`title @a title §l§6${this.preparetionTime / 20}`);
+      // world.sendMessage(`${this.preparetionTimeCount}`)
+      if (this.preparetionTimeCount < this.preparetionTime) {
+        if (this.preparetionTimeCount % 20 === 0) { 
+          const time = (this.preparetionTime - this.preparetionTimeCount) / 20;
+          this.overworld.runCommand(`title @a title §l§6${time}`);
         }
-        this.preparetionTime--;
-        return;
-      } else if (this.preparetionTime === 0) {
+        this.preparetionTimeCount++;
+      } else if (this.preparetionTimeCount === this.preparetionTime) {
         this.Start();
-        this.preparetionTime = -1;
-      }
-      const currentRound = this.currentRound;
-      if (currentRound.isStarted) {
-        currentRound.Update();
+        this.preparetionTimeCount++;
       } else {
-        if (this.roundIntervalCount++ <= this.roundInterval) return; 
-        if (this.roundMaxCount < this.rouds.length + 1) { this.End(); return; }
-        this.roundIntervalCount = 0;
-        this.StartRound();
+        const currentRound = this.currentRound;
+        if (currentRound.isStarted) {
+          currentRound.Update();
+        } else {
+          if (this.roundIntervalCount++ <= this.roundInterval) return;
+          // 試合終了時
+          if (this.roundMaxCount < this.rouds.length + 1) {
+            // 結果発表
+            if (this.resultAnnounceTimeCount === 0) {
+              const winner = this.knights.reduce((a, b) => a.points > b.points ? a : b);
+              world.sendMessage(`§l§6${this.resultAnnounceTime / 20}秒後§fにホームに戻ります`);
+              this.overworld.runCommand(`title @a title §l§c勝者: §6${winner.name}`);
+              this.knights.forEach((knight) => {
+                knight.ChangeGameMode("adventure");
+                if (knight === winner) {
+                  knight.object.teleport(this.winnerLocation, { facingLocation: this.loserLocation });
+                } else {
+                  knight.object.teleport(this.loserLocation, { facingLocation: this.winnerLocation });
+                }
+              });
+            } else if (this.resultAnnounceTimeCount === this.resultAnnounceTime) {
+              this.End();
+            }
+            this.resultAnnounceTimeCount++;
+          }
+          // 次の試合へ
+          else {
+            this.roundIntervalCount = 0;
+            this.StartRound();
+          }
+        }
       }
     }
 
@@ -156,6 +201,7 @@ import Round from "./round/round";
       const knight = this.getKnight(player.name);
       currentRound.OnKnightUsePointStick(pointStickId, knight);
     }
+
     // Public custom methods
     public JoinPlayer(player: Player) {
       if (this.isAlreadyJoined(player.name)) return;
@@ -163,7 +209,6 @@ import Round from "./round/round";
       const pointsObj = this.getScoreboardObjective("points");
       if (!pointsObj) return;
       world.sendMessage(`§l§6${player.name} §fがゲームに§a参加§fしました`);
-      if (player.nameTag !== "") player.nameTag = "";
       if (!pointsObj.hasParticipant(knight.decoratedName)) pointsObj.addScore(knight.decoratedName, this.initalPoints);
       if (this.isStarted) { 
         knight.ChangeGameMode("spectator"); 
@@ -178,7 +223,7 @@ import Round from "./round/round";
       });
       if (knight.object.isOp()) {
         try {
-          knight.object.runCommand(`tp @s @e[type=minecraft:armor_stand,name=system]`);
+          knight.object.runCommand(`tp @s @e[type=minecraft:armor_stand,name=system, tag=op]`);
         } catch (error) {
           knight.object.teleport(this.spawnLocation);
         }

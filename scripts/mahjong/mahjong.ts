@@ -1,6 +1,5 @@
-import { world , Player, CompoundBlockVolumePositionRelativity } from "@minecraft/server";
+import { world , Player } from "@minecraft/server";
 import Game from "./game";
-import { Tile, tiles } from "./tile";
 
 type waitPlayer = { name: string, count: number };
 export default class Mahjong {

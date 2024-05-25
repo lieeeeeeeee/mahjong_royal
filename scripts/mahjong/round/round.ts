@@ -10,7 +10,11 @@ export default class Round {
     private readonly second: number = 20;
     private readonly minute: number = 60 * this.second;
     private readonly preparationDuration: number = 10 * this.second;
-    private readonly duration: number = 5 * this.minute;
+    private readonly duration: number = 5 * this.minute; // <- ここを変更
+    // private readonly duration: number = 15 * this.second; // <- ここを変更 test
+    private readonly lebelReward: number = 100;
+    private readonly initTileSpawnInterval: number = 6 * this.second; // <- ここを変更
+    // private readonly initTileSpawnInterval: number = 5; // <- ここを変更 test
     private readonly rocketingInterval: number = 4 * this.second;
     private readonly reachReward: number = 2000;
     private readonly decreasePercentage: number = 0.1;
@@ -19,21 +23,18 @@ export default class Round {
     private index: number;
     private shuffledWall: Tile[] = [];
     public knights: Knight[];
-    private placedTiles: Tile[] = [];
+    private placedTileLocs: Vector3[] = [];
     private worldBorder: WorldBorder = new WorldBorder();
     public isStarted: boolean = false;
     private pointsScoreboardObjective: ScoreboardObjective;
     private runTime = 0;
     private killCount: number = 0;
     private winnerCount: number = 0;
-    private safeAreaSize: number = 40;
+    private safeAreaSize: number = 20;
     private minSpawnableArea: number = this.safeAreaSize * 0.3;
+    private tileSpawnInterval: number = this.initTileSpawnInterval;
+    private isDuringTermination: boolean = false;
 
-
-    private get tileSpawnInterval(): number {
-        const initValue = 5 * this.second;
-        return Math.max(initValue - Math.floor(this.killCount / this.knights.length), this.second);
-    }
     // Initialize
     public constructor(index: number, knights: Knight[], pointsScoreboardObj: ScoreboardObjective) {
         this.index = index;
@@ -48,7 +49,7 @@ export default class Round {
     public Start() {
         this.displayTile(`§l${this.index}局目 §a開始!!`, `準備時間${this.preparationDuration / 20}秒`);
         this.isStarted = true;
-        this.safeAreaSize += this.knights.length * 15;
+        this.safeAreaSize += this.knights.length * 15; // <- ここを変更
         this.spawnWorldBorder();
         this.overworld.runCommand(`gamerule pvp true`);
         for (let knight of this.knights) {
@@ -65,9 +66,10 @@ export default class Round {
         }
     }
     public End() {
+        if (this.isDuringTermination) return;
+        this.isDuringTermination = true;
         this.displayTile(`§l${this.index}局目 §c終了!!`);
         world.sendMessage(`§l結果:`);
-        this.isStarted = false;
         this.respawnWorldBorder();
         this.cleanUpTiles();
         this.overworld.runCommand(`gamerule pvp false`);
@@ -88,14 +90,16 @@ export default class Round {
                     knight.points += this.reachReward;
                 }
             }
-            world.sendMessage(`§l${knight.name}: §6${knight.points}§f点 [${handStr}§f]`);
-            knight.object.sendMessage(`§l経験値\"Level x 1000(§c${level * 1000}§f)\"を獲得しました`);
-            knight.points += level * 1000;
+            // world.sendMessage(`§l${knight.name}: §6${knight.points}§f点 [${handStr}§f]`);
+            knight.object.runCommand(`tellraw @a {"rawtext":[{"text": "§l${knight.name}: §6${knight.points}§f点 [§r${handStr}§f§l]"}]}`);
+            knight.object.sendMessage(`§l経験値\"Level x 1000(§c${level * this.lebelReward}§f)\"を獲得しました`);
+            knight.points += level * this.lebelReward;
             this.pointsScoreboardObjective.setScore(knight.decoratedName, knight.points);
             knight.ChangeGameMode("spectator");
             knight.object.playSound("horn.call.0");
             knight.Reset();
         });
+        this.isStarted = false;
     }
     public Update() {
         if (!this.isStarted) return;
@@ -124,7 +128,12 @@ export default class Round {
         else if (elapsedTime <= this.duration) {
             const remainingTime = this.duration - elapsedTime;
             // 牌を生成
-            if (this.runTime % this.tileSpawnInterval === 0) this.spawnTile();
+            if (this.runTime % this.tileSpawnInterval === 0) {
+                for (let i = 0; i < this.knights.length; i++) {
+                    if (!this.knights[i].isParticipat) continue;
+                    this.spawnTile();
+                }
+            }
             // リーチ中のプレイヤーの位置を表示
             if (remainingTime % this.rocketingInterval === 0) this.knights.forEach((knight) => { knight.ExposeLocation(); });
             // 手牌をactionbarに表示
@@ -168,6 +177,7 @@ export default class Round {
             killer.DisplayKillEffect();
             this.spawnXp(10, knight!.object.location);
             this.pointsScoreboardObjective.setScore(killer.decoratedName, killer.points);
+            this.tileSpawnInterval =  Math.max(this.initTileSpawnInterval - Math.floor(this.killCount / this.knights.length), this.second);
         }
     }
     public OnKnightSpawn(knight?: Knight) {
@@ -195,10 +205,14 @@ export default class Round {
         if(xiangting === 0) {
             const xiangpai = knight!.hand.tingpai();
             const ids = xiangpai.map((tile) => ConvertToIdentifier(tile[0], Number(tile[1])));
-            const tiles = ids.map((id) => new Tile(id, this.getRandomLocation(this.minSpawnableArea)));
+            const tiles = ids.map((id) => new Tile(id));
             world.sendMessage(`§l§6${knight!.name}§fが§aリーチ§fしました`);
-            tiles.forEach((tile) => this.placeTile(tile));
-            knight!.object.sendMessage(`§l[${knight!.hand.getDisplayTingpaiString()}§f]でアガれます`);
+            tiles.forEach((tile) => {
+                const loc = this.getRandomLocation(this.minSpawnableArea);
+                this.spawnTile(tile, loc);
+            });
+            // knight!.object.sendMessage(`§l[${knight!.hand.getDisplayTingpaiString()}§f]でアガれます`);
+            knight!.object.runCommand(`tellraw @a {"rawtext":[{"text": "§l[§r${knight!.hand.getDisplayTingpaiString()}§l§f]でアガれます"}]}`);
             knight!.isRiichi = true;
         } else { 
             knight!.object.sendMessage(`§lあと§6${xiangting}枚§f揃えるとリーチできます`);
@@ -218,40 +232,36 @@ export default class Round {
         this.winnerCount++;
         if (this.knights.length === this.winnerCount) this.End();
     }
-    public OnKnightUsePointStick(pointStickId: string, knight?: Knight) {
+    public OnKnightUsePointStick(pointStickId: string, knight?: Knight, block?: Block) {
         if (!this.isRoundInProgress(knight)) return;
         const pointStick = GetPointStick(pointStickId);
         if (!pointStick) return;
-        if (pointStick.point === 5000) return;
+        if (pointStick.point === 5000 || pointStick.point === 10000 || pointStick.point === 100) return;
         knight!.points -= pointStick.point;
         this.pointsScoreboardObjective.setScore(knight!.decoratedName, knight!.points);
     }
     // Public custom methods
     public cleanUpTiles() {
-        for (let tile of this.placedTiles) this.breakBlock(tile.location);
-        this.placedTiles = [];
+        for (let tileLoc of this.placedTileLocs) this.breakBlock(tileLoc);
+        this.placedTileLocs = [];
     }
     public respawnWorldBorder() {
         this.overworld.runCommand(`scoreboard players set @e[name=system, type=armor_stand] anti_type 0`);
     }
 
     // Private custom methods
-    private spawnTile() {
-        for (let i = 0; i < this.knights.length; i++) {
-            if (!this.knights[i].isParticipat) continue;
-            const randomTile = this.drawTile();
-            const loc = this.getRandomLocation();
-            if (loc.y <= -64) continue;
-            randomTile.location = loc;
-            this.placeTile(randomTile);
-        }
+    private spawnTile(tile?: Tile, loc?: Vector3) {
+        const randomTile = tile ?? this.drawTile();
+        const location = loc ?? this.getRandomLocation();
+        if (location.y <= -64) return;
+        randomTile.location = location;
+        this.placeTile(randomTile);
     }
-    private distributeHand(knight: Knight) {
-        const hand: Tile[] = [];
-        for (let i = 0; i < this.handCount; i++) {
-            hand.push(this.drawTile());
-        }
-        knight.GainInitialHand(hand);
+    private placeTile(tile: Tile) {
+        const tileLoc = tile.location;
+        // world.sendMessage(`§l§6${tileLoc.x} ${tileLoc.y} ${tileLoc.z}§fに設置しました`);
+        this.overworld.runCommand(`setblock ${tileLoc.x} ${tileLoc.y} ${tileLoc.z} ${tile.blockId} keep`);
+        this.placedTileLocs.push(tileLoc);
     }
     private pickUpTile(knight: Knight, tile: Tile) {
         knight.PickUpTile(tile);
@@ -268,10 +278,12 @@ export default class Round {
         const randomIndex = Math.floor(Math.random() * tiles.length);
         return tiles[randomIndex];
     }
-    private placeTile(tile: Tile) {
-        const tileLoc = tile.location;
-        this.overworld.runCommand(`setblock ${tileLoc.x} ${tileLoc.y} ${tileLoc.z} ${tile.blockId} keep`);
-        this.placedTiles.push(tile);
+    private distributeHand(knight: Knight) {
+        const hand: Tile[] = [];
+        for (let i = 0; i < this.handCount; i++) {
+            hand.push(this.drawTile());
+        }
+        knight.GainInitialHand(hand);
     }
     private spawnWorldBorder() {
         const mapCenterLoc = this.getMapCenterLocation();
@@ -284,6 +296,7 @@ export default class Round {
     }
     
     private breakBlock(loc: Vector3, option: string = "replace") {
+        // world.sendMessage(`§l§6${loc.x} ${loc.y} ${loc.z}§fを破壊しました`);
         this.overworld.runCommand(`setblock ${loc.x} ${loc.y} ${loc.z} air ${option}`);
     }
     private isRoundInProgress(knight?: Knight): boolean {
@@ -296,7 +309,7 @@ export default class Round {
     }
     private getRandomLocation(min: number = 0): Vector3 {
         const centerLoc = this.getMapCenterLocation();
-        if (!centerLoc) return {x: 0, y: 0, z: 0};
+        if (!centerLoc) return {x: 0, y:-64, z: 0};
         const r = Math.random() * (this.safeAreaSize - min) + min;
         const theta = Math.random() * 2 * Math.PI;
         const x = Math.floor(centerLoc.x + r * Math.cos(theta));
@@ -308,9 +321,9 @@ export default class Round {
         const loc = {x: x, y: 128, z: z};
         while (this.overworld.getBlock(loc)?.isAir) {
             loc.y--;
-            if (loc.y <= -64) { return 255; }
+            if (loc.y <= -64) { return -64; }
         }
-        if (loc.y === 128) return 255;
+        if (loc.y === 128) return -64;
         return loc.y;
     }
     private shuffleWall(wall: Tile[]): Tile[] {

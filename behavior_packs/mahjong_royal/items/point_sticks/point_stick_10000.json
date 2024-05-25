@@ -14,17 +14,10 @@
         ]
       },
       "minecraft:damage": {
-        "value": 50.0
+        "value": 1.0
       },
       "minecraft:allow_off_hand": {
         "value": false
-      },
-      "minecraft:durability": {
-        "damage_chance": {
-          "min": 100,
-          "max": 100
-        },
-        "max_durability": 100
       },
       "minecraft:display_name": {
         "value": "item.mahjong:point_stick_10000_item.name"
